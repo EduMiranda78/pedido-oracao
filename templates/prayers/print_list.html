@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pedidos de Oração | Grupo Rede</title>
+    <style>
+        *{box-sizing:border-box} body{font-family:Arial,Helvetica,sans-serif;color:#17221d;margin:0;background:#f2f4f2}.page{max-width:900px;margin:30px auto;background:white;padding:34px 40px}.head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #244b3e;padding-bottom:18px;margin-bottom:8px}.brand{font-size:13px;font-weight:700;letter-spacing:.08em;color:#244b3e}.head h1{font-size:25px;margin:5px 0}.head p{margin:0;color:#657069;font-size:12px}.print-btn{border:0;background:#244b3e;color:white;padding:10px 15px;border-radius:7px;font-weight:700;cursor:pointer}.request{padding:20px 0;border-bottom:1px solid #dce2de;break-inside:avoid}.request-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.number{font-size:10px;color:#7c8781;text-transform:uppercase;letter-spacing:.08em}.request h2{margin:3px 0 8px;font-size:18px}.meta{font-size:12px;color:#59655e;margin-bottom:12px}.meta strong{color:#1d2923}.status{font-size:10px;font-weight:700;border:1px solid #ccd6d0;padding:4px 7px;border-radius:999px;white-space:nowrap}.prayer{font-size:13px;line-height:1.6;margin:0;padding-left:18px;border-left:3px solid #dce8e2}.empty{text-align:center;padding:50px;color:#657069}@media print{body{background:white}.page{max-width:none;margin:0;padding:0}.print-btn{display:none}@page{margin:1.5cm}}
+    </style>
+</head>
+<body>
+<div class="page">
+    <header class="head"><div><span class="brand">GRUPO REDE</span><h1>Pedidos de Oração</h1><p>Relatório para acompanhamento da equipe</p></div><button class="print-btn" onclick="window.print()">Imprimir</button></header>
+    {% for prayer in requests %}
+    <article class="request">
+        <div class="request-top"><div><span class="number">Pedido #{{ prayer.pk }}</span><h2>{{ prayer.beneficiary_name }}</h2></div><span class="status">{{ prayer.get_status_display }}{% if prayer.is_reserved %} | Reservado{% endif %}</span></div>
+        <div class="meta">Solicitado por <strong>{{ prayer.requester_name }}</strong>{% if prayer.requester_origin %} | De: <strong>{{ prayer.requester_origin }}</strong>{% endif %} | {{ prayer.created_at|date:"d/m/Y H:i" }}</div>
+        <p class="prayer">{{ prayer.prayer_text|linebreaksbr }}</p>
+    </article>
+    {% empty %}<div class="empty">Nenhum pedido encontrado para os filtros informados.</div>{% endfor %}
+</div>
+</body>
+</html>

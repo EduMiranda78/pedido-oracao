@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Consultar pedidos | Grupo Rede{% endblock %}
+{% block content %}
+<header class="page-header list-page-header">
+    <div>
+        <span class="eyebrow">CONSULTA</span>
+        <h1>Todos os pedidos</h1>
+        <p>Pesquise, filtre, imprima ou exporte os registros disponíveis para você.</p>
+    </div>
+    <a class="button button-primary button-lg desktop-only-action" href="{% url 'prayer_create' %}">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Novo pedido
+    </a>
+</header>
+
+<form class="panel filters-panel" method="get">
+    <div class="search-field">
+        <label for="q">Pesquisar</label>
+        <div class="search-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <input id="q" type="search" name="q" value="{{ request.GET.q }}" placeholder="Nome, origem, pessoa que recebe ou conteúdo do pedido">
+        </div>
+    </div>
+
+    <div class="filter-grid">
+        <div class="field compact-field">
+            <label for="filter-status">Status</label>
+            <select id="filter-status" name="status">
+                <option value="">Todos</option>
+                {% for value, label in statuses %}<option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="field compact-field">
+            <label for="filter-reserved">Privacidade</label>
+            <select id="filter-reserved" name="reserved">
+                <option value="">Todos</option>
+                <option value="no" {% if request.GET.reserved == "no" %}selected{% endif %}>Normal</option>
+                <option value="yes" {% if request.GET.reserved == "yes" %}selected{% endif %}>Reservado</option>
+            </select>
+        </div>
+        <div class="field compact-field">
+            <label for="filter-from">De</label>
+            <input id="filter-from" type="date" name="date_from" value="{{ request.GET.date_from }}">
+        </div>
+        <div class="field compact-field">
+            <label for="filter-to">Até</label>
+            <input id="filter-to" type="date" name="date_to" value="{{ request.GET.date_to }}">
+        </div>
+    </div>
+
+    <div class="filter-actions">
+        <button class="button button-primary" type="submit">
+            <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7v5l-4 2v-7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            Aplicar filtros
+        </button>
+        <a class="button button-secondary" href="{% url 'prayer_list' %}">Limpar</a>
+    </div>
+</form>
+
+<div class="results-toolbar">
+    <div class="result-summary"><strong>{{ page_obj.paginator.count }}</strong><span>resultado{{ page_obj.paginator.count|pluralize }}</span></div>
+    <div class="export-group no-print">
+        <span>Exportar</span>
+        <a href="{% url 'print_list' %}?{{ filter_query }}" target="_blank">Imprimir</a>
+        <a href="{% url 'export_csv' %}?{{ filter_query }}">CSV</a>
+        <a href="{% url 'export_xlsx' %}?{{ filter_query }}">Excel</a>
+        <a href="{% url 'export_pdf' %}?{{ filter_query }}">PDF</a>
+    </div>
+</div>
+
+<section class="prayer-list">
+{% for prayer in page_obj %}
+    <a class="prayer-list-card" href="{% url 'prayer_detail' prayer.pk %}">
+        <span class="person-avatar large">{{ prayer.beneficiary_name|first|upper }}</span>
+        <span class="prayer-list-main">
+            <span class="prayer-list-top">
+                <span><small>Pedido #{{ prayer.pk }}</small><strong>{{ prayer.beneficiary_name }}</strong></span>
+                <span class="status-set">
+                    {% if prayer.is_reserved %}<span class="status-pill reserved">Reservado</span>{% endif %}
+                    <span class="status-pill {{ prayer.status }}">{{ prayer.get_status_display }}</span>
+                </span>
+            </span>
+            <span class="prayer-requester">Solicitado por <strong>{{ prayer.requester_name }}</strong>{% if prayer.requester_origin %} <span class="origin-separator">•</span> {{ prayer.requester_origin }}{% endif %}</span>
+            <span class="prayer-excerpt">{{ prayer.prayer_text|truncatechars:230 }}</span>
+            <span class="prayer-date"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>{{ prayer.created_at|date:"d/m/Y H:i" }}</span>
+        </span>
+        <span class="open-arrow">›</span>
+    </a>
+{% empty %}
+    <div class="panel empty-state">
+        <span class="empty-symbol"><svg width="25" height="25" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16.5 16.5 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+        <h3>Nenhum pedido encontrado</h3>
+        <p>Altere os filtros ou faça uma nova pesquisa.</p>
+        <a class="button button-secondary" href="{% url 'prayer_list' %}">Limpar pesquisa</a>
+    </div>
+{% endfor %}
+</section>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Paginação">
+    {% if page_obj.has_previous %}<a href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.previous_page_number }}">← <span>Anterior</span></a>{% else %}<span class="disabled">← <span>Anterior</span></span>{% endif %}
+    <div>Página <strong>{{ page_obj.number }}</strong> de <strong>{{ page_obj.paginator.num_pages }}</strong></div>
+    {% if page_obj.has_next %}<a href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.next_page_number }}"><span>Próxima</span> →</a>{% else %}<span class="disabled"><span>Próxima</span> →</span>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

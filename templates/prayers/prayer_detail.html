@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Pedido #{{ prayer.pk }} | Grupo Rede{% endblock %}
+{% block content %}
+<header class="page-header detail-header no-print">
+    <div>
+        <a class="back-link" href="{% url 'prayer_list' %}">← Voltar aos pedidos</a>
+        <span class="eyebrow">PEDIDO #{{ prayer.pk }}</span>
+        <h1>{{ prayer.beneficiary_name }}</h1>
+        <p>Solicitado por {{ prayer.requester_name }}{% if prayer.requester_origin %}, de {{ prayer.requester_origin }}{% endif %}, em {{ prayer.created_at|date:"d/m/Y" }} às {{ prayer.created_at|date:"H:i" }}.</p>
+    </div>
+    <div class="header-actions">
+        <a class="button button-secondary" href="{% url 'prayer_edit' prayer.pk %}">
+            <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16 11-11 4 4L8 20H4zM13 7l4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            Editar
+        </a>
+        <button class="button button-primary" type="button" onclick="window.print()">
+            <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            Imprimir
+        </button>
+    </div>
+</header>
+
+<article class="prayer-document">
+    <div class="document-band">
+        <div class="document-brand">
+            <span class="document-logo"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 3v18M7 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <div><span>GRUPO REDE</span><h2>Pedido de Oração</h2><small>Registro #{{ prayer.pk }}</small></div>
+        </div>
+        <span class="status-pill {{ prayer.status }} document-status">{{ prayer.get_status_display }}</span>
+    </div>
+
+    <div class="document-meta">
+        <div><span>Data do registro</span><strong>{{ prayer.created_at|date:"d/m/Y H:i" }}</strong></div>
+        <div><span>Solicitado por</span><strong>{{ prayer.requester_name }}</strong></div>
+        <div><span>De onde é?</span><strong>{{ prayer.requester_origin|default:"Não informado" }}</strong></div>
+        <div><span>Orar por</span><strong>{{ prayer.beneficiary_name }}</strong></div>
+        <div><span>Última atualização</span><strong>{{ prayer.updated_at|date:"d/m/Y H:i" }}</strong></div>
+    </div>
+
+    {% if prayer.is_reserved %}
+    <div class="reserved-banner">
+        <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        <div><strong>Pedido reservado</strong><span>Este registro possui acesso restrito.</span></div>
+    </div>
+    {% endif %}
+
+    <section class="document-body">
+        <span class="document-label">PEDIDO DE ORAÇÃO</span>
+        <div class="prayer-text">{{ prayer.prayer_text|linebreaksbr }}</div>
+    </section>
+
+    <footer class="document-footer"><span>Grupo Rede</span><span>Registro #{{ prayer.pk }}</span></footer>
+</article>
+
+{% if audits %}
+<section class="panel history-panel no-print">
+    <div class="panel-heading slim"><div><span class="eyebrow">HISTÓRICO</span><h2>Movimentações do pedido</h2><p>Registro das alterações realizadas pela equipe.</p></div></div>
+    <div class="timeline">
+    {% for audit in audits %}
+        <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div><strong>{{ audit.get_action_display }}</strong><p>{% if audit.user %}Por {{ audit.user.username }}{% else %}Usuário removido{% endif %}</p></div>
+            <time>{{ audit.created_at|date:"d/m/Y H:i" }}</time>
+        </div>
+    {% empty %}<p class="muted-block">Nenhuma alteração registrada.</p>{% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

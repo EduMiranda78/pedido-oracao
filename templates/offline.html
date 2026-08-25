@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Sem conexão | Grupo Rede{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block auth_content %}
+<section class="auth-layout">
+  <div class="auth-form-panel" style="grid-column:1/-1">
+    <div class="login-box">
+      <div class="login-mobile-brand" style="display:flex">
+        <span class="auth-logo small" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3v18M7 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <div><strong>Grupo Rede</strong><span>Pedidos de Oração</span></div>
+      </div>
+      <div class="login-heading">
+        <span class="eyebrow">SEM CONEXÃO</span>
+        <h2>Conexão indisponível</h2>
+        <p>Reconecte-se à internet e tente novamente. Nenhum pedido é alterado enquanto estiver offline.</p>
+      </div>
+      <button class="button button-primary button-block" type="button" onclick="location.reload()">Tentar novamente</button>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#173f35">
+    <meta name="color-scheme" content="light">
+    <meta name="application-name" content="Pedidos de Oração">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Pedidos de Oração">
+    <title>{% block title %}Pedidos de Oração{% endblock %}</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}?v=20260824-7">
+    <style>svg{width:1em;height:1em;display:block}</style>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20260824-7">
+    <script defer src="{% static 'js/app.js' %}?v=20260824-7"></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% if user.is_authenticated %}
+<div class="app-shell">
+    <aside class="sidebar no-print" aria-label="Navegação principal">
+        <div class="sidebar-top">
+            <a class="brand" href="{% url 'dashboard' %}" aria-label="Grupo Rede, página inicial">
+                <span class="brand-symbol" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M12 3v18M7 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <span class="brand-text">
+                    <strong>Grupo Rede</strong>
+                    <small>Pedidos de Oração</small>
+                </span>
+            </a>
+
+            <a class="sidebar-new" href="{% url 'prayer_create' %}">
+                <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Novo pedido
+            </a>
+
+            <nav class="sidebar-nav">
+                <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Visão geral</span>
+                </a>
+                <a href="{% url 'prayer_list' %}" class="{% if request.resolver_match.url_name == 'prayer_list' or request.resolver_match.url_name == 'prayer_detail' or request.resolver_match.url_name == 'prayer_edit' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Todos os pedidos</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <span class="user-avatar">{{ user.username|first|upper }}</span>
+                <span class="user-meta">
+                    <strong>{{ user.get_full_name|default:user.username }}</strong>
+                    <small>{% if user.is_staff %}Administrador{% else %}Membro da equipe{% endif %}</small>
+                </span>
+            </div>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="sidebar-logout" type="submit">
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sair
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="app-area">
+        <header class="mobile-header no-print">
+            <a class="mobile-brand" href="{% url 'dashboard' %}">
+                <span class="brand-symbol small" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v18M7 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+                <span><strong>Grupo Rede</strong><small>Pedidos de Oração</small></span>
+            </a>
+            <a class="mobile-quick-new" href="{% url 'prayer_create' %}" aria-label="Novo pedido">+</a>
+        </header>
+
+        <main class="content-wrap">
+            {% if messages %}
+                <div class="messages no-print" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="toast {% if message.tags %}{{ message.tags }}{% endif %}" data-toast>
+                            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 12 3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>{{ message }}</span>
+                            <button type="button" data-dismiss-toast aria-label="Fechar aviso">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<nav class="bottom-nav no-print" aria-label="Navegação móvel">
+    <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span>Início</span>
+    </a>
+    <a href="{% url 'prayer_list' %}" class="{% if request.resolver_match.url_name == 'prayer_list' or request.resolver_match.url_name == 'prayer_detail' or request.resolver_match.url_name == 'prayer_edit' %}active{% endif %}">
+        <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h13M7 12h13M7 19h13M3.5 5h.01M3.5 12h.01M3.5 19h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Pedidos</span>
+    </a>
+    <a href="{% url 'prayer_create' %}" class="bottom-new {% if request.resolver_match.url_name == 'prayer_create' %}active{% endif %}">
+        <span class="bottom-new-icon">+</span>
+        <span>Novo</span>
+    </a>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">
+            <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Sair</span>
+        </button>
+    </form>
+</nav>
+{% else %}
+<main class="auth-page">
+    {% block auth_content %}{% endblock %}
+</main>
+{% endif %}
+</body>
+</html>

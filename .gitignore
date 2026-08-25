@@ -1,0 +1,44 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Django runtime
+staticfiles/
+media/
+*.sqlite3
+
+# Database dumps and backups
+backups/
+backup/
+*.sql
+*.dump
+*.bak
+*.backup
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
