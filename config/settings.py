@@ -111,24 +111,29 @@ CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Acesso direto HTTP pela porta 9400.
-# Quando o sistema passar a usar HTTPS, estas duas opções devem voltar para True.
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
-
-CSRF_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_SAMESITE = "Lax"
-
 # Cookies exclusivos desta aplicação.
 # Cookies são compartilhados pelo host independentemente da porta,
-# portanto não devemos usar os nomes padrão em uma VPS com vários apps.
+# portanto não usamos os nomes padrão em servidores com vários apps.
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_NAME = "pedido_oracao_csrftoken"
 SESSION_COOKIE_NAME = "pedido_oracao_sessionid"
 
-# HTTPS via Nginx na porta 9440.
+# Quando TLS termina no proxy reverso, o Django reconhece a origem HTTPS
+# pelo cabeçalho enviado pelo Nginx.
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://185.173.110.36:9440",
-]
+# Segurança HTTPS parametrizada por ambiente.
+# Em produção pública por HTTPS, use DJANGO_SECURE_COOKIES=True.
+CSRF_COOKIE_SECURE = (
+    os.getenv("DJANGO_SECURE_COOKIES", "False").strip().lower()
+    in {"1", "true", "yes", "on"}
+)
+SESSION_COOKIE_SECURE = CSRF_COOKIE_SECURE
 
+# Lista separada por vírgulas. Ex.: https://app.exemplo.com,https://host:9440
+CSRF_TRUSTED_ORIGINS = [
+    item.strip()
+    for item in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if item.strip()
+]

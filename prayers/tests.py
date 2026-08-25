@@ -3,6 +3,9 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 import json
+import os
+import subprocess
+import sys
 
 from .models import PrayerRequest
 
@@ -144,3 +147,43 @@ class PWAClientScriptTests(TestCase):
         self.assertNotIn("beforeinstallprompt", content)
         self.assertNotIn("data-install-app", content)
 
+
+
+class SecuritySettingsTests(TestCase):
+    def test_https_security_settings_are_configurable_by_environment(self):
+        env = os.environ.copy()
+        env.update({
+            "DJANGO_SECRET_KEY": "test-only-secret",
+            "POSTGRES_DB": "test_db",
+            "POSTGRES_USER": "test_user",
+            "POSTGRES_PASSWORD": "test_password",
+            "POSTGRES_HOST": "127.0.0.1",
+            "POSTGRES_PORT": "5432",
+            "DJANGO_SECURE_COOKIES": "True",
+            "DJANGO_CSRF_TRUSTED_ORIGINS": (
+                "https://app.example,https://app.example:9440"
+            ),
+        })
+        code = (
+            "import json; import config.settings as s; "
+            "print(json.dumps({"
+            "'csrf': s.CSRF_COOKIE_SECURE, "
+            "'session': s.SESSION_COOKIE_SECURE, "
+            "'origins': s.CSRF_TRUSTED_ORIGINS"
+            "}))"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            env=env,
+            cwd=Path(__file__).resolve().parent.parent,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        payload = json.loads(result.stdout.strip())
+        self.assertTrue(payload["csrf"])
+        self.assertTrue(payload["session"])
+        self.assertEqual(
+            payload["origins"],
+            ["https://app.example", "https://app.example:9440"],
+        )

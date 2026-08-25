@@ -10,8 +10,8 @@
 ![Gunicorn](https://img.shields.io/badge/Gunicorn-WSGI-499848)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-ready-5A0FC8?logo=pwa&logoColor=white)
-![Version](https://img.shields.io/badge/version-1.1.6-6C63FF)
-![Repository](https://img.shields.io/badge/repository-private-555555)
+![Version](https://img.shields.io/badge/version-1.1.7-6C63FF)
+![Repository](https://img.shields.io/badge/repository-public-2EA44F)
 
 </div>
 
@@ -106,6 +106,7 @@ Regras principais:
 - o banco PostgreSQL não publica sua porta no host;
 - o arquivo `.env` não deve ser versionado;
 - dumps do banco, backups e logs não devem ir para o GitHub.
+- o repositório público contém somente código e configuração de exemplo; dados reais de pedidos não são versionados.
 
 Consulte [`SECURITY.md`](SECURITY.md) antes de alterar regras de autenticação, privacidade ou exposição externa.
 
@@ -164,7 +165,7 @@ Mais detalhes em [`docs/PRODUCTION.md`](docs/PRODUCTION.md).
 Clone o repositório:
 
 ```bash
-git clone git@github.com:EduMiranda78/pedido-oracao.git
+git clone https://github.com/EduMiranda78/pedido-oracao.git
 cd pedido-oracao
 ```
 
@@ -201,6 +202,8 @@ COMPOSE_PROJECT_NAME=pedido_oracao
 DJANGO_SECRET_KEY=troque-por-uma-chave-segura
 DJANGO_DEBUG=False
 DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+DJANGO_SECURE_COOKIES=False
+DJANGO_CSRF_TRUSTED_ORIGINS=
 POSTGRES_DB=pedido_oracao
 POSTGRES_USER=pedido_oracao
 POSTGRES_PASSWORD=troque-por-uma-senha-segura
@@ -327,4 +330,4 @@ GitHub: [`EduMiranda78`](https://github.com/EduMiranda78)
 
 ## Licenciamento
 
-Repositório privado. O código permanece sob os direitos autorais do autor e não deve ser redistribuído sem autorização.
+Repositório público para consulta do código-fonte. O código permanece sob os direitos autorais do autor e não deve ser redistribuído, relicenciado ou utilizado comercialmente sem autorização.

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.7, 2026-08-24
+
+- atualiza a documentação para refletir a visibilidade pública do repositório;
+- remove endpoint de produção hardcoded de `config/settings.py`;
+- parametriza `CSRF_TRUSTED_ORIGINS` via `DJANGO_CSRF_TRUSTED_ORIGINS`;
+- parametriza cookies `Secure` via `DJANGO_SECURE_COOKIES`;
+- ativa cookies seguros no ambiente de produção atual;
+- mantém o HTTP interno disponível para healthcheck e proxy, com uso autenticado orientado a HTTPS;
+- generaliza `.env.example` para evitar informações específicas do servidor;
+- adiciona teste para a configuração HTTPS por variáveis de ambiente.
+
 ## 1.1.6, 2026-08-24
 
 - remove o botão customizado de instalação da tela de login;

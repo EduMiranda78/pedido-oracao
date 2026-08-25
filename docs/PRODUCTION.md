@@ -113,6 +113,19 @@ proxy_set_header X-Forwarded-Proto https;
 
 O Django deve reconhecer corretamente o protocolo encaminhado pelo proxy.
 
+## Variáveis de segurança HTTPS
+
+O código não contém endereço, domínio ou porta pública de produção. Configure no `.env` local:
+
+```env
+DJANGO_SECURE_COOKIES=True
+DJANGO_CSRF_TRUSTED_ORIGINS=https://seu-endereco-https.example
+```
+
+`DJANGO_CSRF_TRUSTED_ORIGINS` aceita múltiplas origens separadas por vírgula.
+
+Com `DJANGO_SECURE_COOKIES=True`, cookies de sessão e CSRF são enviados somente por HTTPS. O endpoint HTTP interno pode continuar sendo usado para healthcheck e comunicação do proxy, mas o uso autenticado pelo navegador deve ocorrer pela origem HTTPS.
+
 ## Arquivos estáticos
 
 O projeto usa:

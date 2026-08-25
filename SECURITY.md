@@ -8,7 +8,7 @@ Por esse motivo, privacidade, autenticação e controle de acesso fazem parte do
 
 ## Recomendações
 
-- mantenha o repositório privado;
+- mantenha o repositório público livre de dados reais, credenciais, dumps, backups e configurações específicas de produção;
 - nunca versione `.env`, chaves, senhas ou tokens;
 - nunca versione dumps PostgreSQL ou backups da aplicação;
 - mantenha o banco sem porta publicada no host;
@@ -30,6 +30,12 @@ Antes de alterar `visible_queryset`, views de edição ou permissões administra
 - criador continua vendo seu próprio pedido reservado;
 - equipe administrativa autorizada continua tendo acesso;
 - edição por usuário comum permanece limitada aos próprios registros.
+
+## Repositório público
+
+A visibilidade pública se aplica ao código-fonte, não aos dados operacionais. Pedidos de oração, credenciais, arquivos `.env`, dumps, backups e logs permanecem fora do Git.
+
+O arquivo `.env.example` contém somente valores de exemplo. Endereços e origens específicas do ambiente de produção devem ser definidos no `.env` local.
 
 ## Credenciais
 
@@ -58,4 +64,4 @@ Em produção, o Nginx deve encaminhar corretamente `X-Forwarded-Proto` para que
 
 ## Relato de problemas
 
-Como o repositório é privado, registre problemas de segurança diretamente nas issues privadas do repositório ou comunique o mantenedor por canal privado.
+Não publique vulnerabilidades, credenciais ou dados pessoais em issues públicas. Comunique problemas de segurança ao mantenedor por um canal privado antes de divulgar detalhes técnicos.
