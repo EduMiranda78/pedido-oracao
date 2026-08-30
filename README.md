@@ -326,7 +326,8 @@ Valide o healthcheck, os arquivos estáticos e os logs após o deploy.
 
 Desenvolvido e mantido por **Eduardo Miranda**.
 
-GitHub: [`EduMiranda78`](https://github.com/EduMiranda78)
+GitHub: [`EduMiranda78`](https://github.com/EduMiranda78)  
+Site: [Miranda Stack](https://mirandastack.com/)
 
 ## Licenciamento
 
