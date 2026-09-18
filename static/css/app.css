@@ -371,3 +371,6 @@ a{color:inherit}button,input,textarea,select{font:inherit}button,a{-webkit-tap-h
     .login-install-top{min-width:44px;width:44px;padding:4px;justify-content:center}
     .login-install-top-copy{display:none}
 }
+
+/* Keep the contact footer reachable on short screens and with the keyboard open. */
+.auth-form-panel { overflow-y: auto; align-items: safe center; }
